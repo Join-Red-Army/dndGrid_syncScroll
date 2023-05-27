@@ -7,7 +7,17 @@ import ColumnsWrapper from '../ColumnsWrapper';
 import RowsWrapper from '../RowsWrapper';
 
 
-const Grid = () => {
+interface IGrid {
+  hideColumns?: boolean
+  hideRows?: boolean
+}
+
+const Grid: React.FC<IGrid> = (props) => {
+  const { 
+    hideColumns = false, 
+    hideRows = false 
+  } = props;
+
   const { columnCount, columnWidth } = useAppSelector(state => state.columns);
   const { rowCount, rowHeight } = useAppSelector(state => state.rows);
 
@@ -17,9 +27,9 @@ const Grid = () => {
 
   const style = useMemo(
     () => ({
-      width: columnCount * columnWidth + 2,
-      height: rowCount * rowHeight + 1, 
-    }), [ columnCount, rowCount, columnWidth, rowHeight ]
+      width: hideColumns ? '' : columnCount * columnWidth + 1,
+      height: hideRows ? '' : rowCount * rowHeight + 1, 
+    }), [ columnCount, rowCount, columnWidth, rowHeight, hideColumns, hideRows ]
   );
 
 
@@ -29,8 +39,8 @@ const Grid = () => {
       ref={ gridRef } 
       style={ style }
     >
-      <ColumnsWrapper ref={ columnsWrapperRef } />
-      <RowsWrapper ref={ rowsWrapperRef }/>
+      { hideColumns ? null : <ColumnsWrapper ref={ columnsWrapperRef } /> }
+      { hideRows ? null : <RowsWrapper ref={ rowsWrapperRef }/> }
     </div>
   );
 };
